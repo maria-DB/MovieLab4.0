@@ -1,0 +1,32 @@
+{
+  "name": "movielab",
+  "version": "1.0.0",
+  "description": "MERN STACK PROJECT",
+  "main": "server.js",
+  "scripts": {
+    "start": "SET node backend/server.js",
+    "dev": "SET NODE_ENV=DEVELOPMENT& nodemon backend/server",
+    "prod": "SET NODE_ENV=PRODUCTION& nodemon backend/server",
+    "seeder": "node backend/utils/seeder.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && npm install --prefix frontend && npm run build --prefix frontend"
+  },
+  "author": "angelica edad",
+  "license": "ISC",
+  "dependencies": {
+    "@mui/material": "^5.2.3",
+    "axios": "^0.24.0",
+    "body-parser": "^1.19.0",
+    "cloudinary": "^1.27.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.16",
+    "swearjar": "^0.2.0",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
