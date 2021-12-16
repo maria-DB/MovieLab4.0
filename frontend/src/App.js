@@ -11,6 +11,9 @@ import RegisterForm from './components/common/RegisterForm';
 import LoginForm from './components/common/LoginForm';
 import { getUserInfo } from './redux/userSlice';
 import React from 'react';
+import MovieDetails from './components/Movies/MovieDetails';
+import ActorDetails from './components/Actors/ActorDetails';
+import ProducerDetails from './components/Producers/ProducerDetails';
 
 function App() {
 
@@ -45,8 +48,11 @@ function App() {
           <Navbar />
           <Routes>
             <Route exact path="/" element={<HomePage/>} />
+            <Route exact path="/movies/:id" element={<MovieDetails/>} />
             <Route exact path="/actors" element={<Actor/>} />
+            <Route exact path="/actors/:id" element={<ActorDetails/>} />
             <Route exact path="/producers" element={<Producer/>} />
+            <Route exact path="/producers/:id" element={<ProducerDetails/>} />
           </Routes>
       </div>
     </Router>

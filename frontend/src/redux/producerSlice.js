@@ -5,15 +5,15 @@ export const getAllProducer = createAsyncThunk(
     'producer/getAllProducer',
     async(obj,{rejectWithValue}) => {
         try {
-            // let keywords = '';
-            //     if(obj.toString().length > 0) {
-            //         keywords = Object.keys(obj).map((item,index) => {
-            //             return `${item}=${obj[item]}`
-            //         }).join('&')
-            //     }
+            let keywords = '';
+                if(obj.toString().length > 0) {
+                    keywords = Object.keys(obj).map((item,index) => {
+                        return `${item}=${obj[item]}`
+                    }).join('&')
+                }
 
 
-            const response = await axios.get(`/api/v1/members?role=Producer`)
+            const response = await axios.get(`/api/v1/members?role=Producer&${keywords}`)
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data)
@@ -22,14 +22,30 @@ export const getAllProducer = createAsyncThunk(
     }
 )
 
+export const getProducerDetail = createAsyncThunk(
+    'producer/getProducerDetail', 
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`/api/v1/members/${obj.id}`)
+            return response.data
+
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+    
+)
+
 const initialState = {
     members:[],
+    producer:null,
     membersCount:0,
     resPerPage:20,
     isLoading:false,
     errors:null,
     hasMore:true,
-    Page:1,
+    page:1,
 };
 
 
@@ -59,6 +75,17 @@ const producerSlice = createSlice({
         [getAllProducer.rejected] : (state,action) => {
             state.errors = action.payload
             state.isLoading = false
+    },
+        [getProducerDetail.pending] : (state) => {
+            state.isLoading = true
+    },
+        [getProducerDetail.fulfilled] : (state,action) => {
+            state.producer = action.payload.member
+            state.isLoading = false
+    },
+    [getProducerDetail.rejected] : (state,action) => {
+        state.errors = action.payload
+        state.isLoading =false
     }
 }
 })

@@ -22,15 +22,32 @@ export const getAllMovies = createAsyncThunk(
     }
 )
 
+
+export const getMovie = createAsyncThunk(
+    'movie/getMovie', 
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`/api/v1/movies/${obj.id}`)
+            return response.data
+
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+    
+)
+
 const initialState = {
     movies:[],
+    movie:null,
     moviesCount:0,
     resPerPage:20,
     filteredMoviesCount:0,
     isLoading:false,
     errors:null,
     hasMore:true,
-    Page:1,
+    page:1,
 };
 
 
@@ -61,6 +78,17 @@ const movieSlice = createSlice({
         [getAllMovies.rejected] : (state,action) => {
             state.errors = action.payload
             state.isLoading = false
+    },
+    [getMovie.pending] : (state) => {
+        state.isLoading = true
+    },
+    [getMovie.fulfilled] : (state,action) => {
+        state.movie = action.payload.movie
+        state.isLoading = false
+    },
+    [getMovie.rejected] : (state,action) => {
+        state.errors = action.payload
+        state.isLoading =false
     }
 }
 })

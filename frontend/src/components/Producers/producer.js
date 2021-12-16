@@ -3,6 +3,7 @@ import { useSelector, useDispatch} from 'react-redux';
 import { getAllProducer, setHasMore } from '../../redux/producerSlice';
 import InfiniteScroll from "react-infinite-scroll-component";
 import { CardMedia, Grid, Paper } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const style = {
     height: 30,
@@ -43,6 +44,7 @@ const Producer = () => {
         <Grid container spacing={2} sx={{p:2}}>
             {members.map(member => (
                 <Grid item lg={4} md={4} key={member._id} sm={4} xs={12}>
+                  <Link to={`/producers/${member._id}`}>
                     <Paper elevation={4} sx={{p:2}}>
                         <CardMedia
                             component="img"
@@ -53,6 +55,7 @@ const Producer = () => {
                                         />
                                         {member.name}
                                     </Paper>
+                                    </Link>
                                 </Grid>
                             ))}
                             </Grid>
@@ -63,5 +66,5 @@ const Producer = () => {
         </>
      );
 }
- 
+
 export default Producer;
