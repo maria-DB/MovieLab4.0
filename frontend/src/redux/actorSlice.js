@@ -35,10 +35,23 @@ export const getActorDetail = createAsyncThunk(
         }
     }
 )
+export const getActorNames = createAsyncThunk(
+    'Actor/getActorNames',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`/api/v1/members/all/names?role=Actors&role=Actress`)
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
     
 
 const initialState = {
     members:[],
+    actorNames:[],
     actor:null,
     membersCount:0,
     resPerPage:20,
@@ -59,6 +72,10 @@ const actorSlice = createSlice({
         },
         setPage : (state,action) => {
             state.page = action.payload
+        },
+        clearActors : (state) =>{
+            state.members = []
+            state.page = 1
         }
     },
     extraReducers: {
@@ -86,8 +103,24 @@ const actorSlice = createSlice({
     [getActorDetail.rejected] : (state,action) => {
     state.errors = action.payload
     state.isLoading =false
+},[getActorNames.pending] : (state) => {
+    state.isLoading = true
+},
+[getActorNames.fulfilled] : (state,action) => {
+
+    const names = []
+
+    action.payload.names.reduce((obj,item) => {
+        return names.push({"title" : item})
+    })
+    state.actorNames = names
+    state.isLoading = false
+},
+[getActorNames.rejected] : (state,action) => {
+    state.errors = action.payload
+    state.isLoading = false
 }
 }
 })
-export const { setHasMore, setPage } = actorSlice.actions
+export const { setHasMore, setPage, clearActors } = actorSlice.actions
 export default actorSlice.reducer

@@ -215,11 +215,12 @@ exports.deleteMovieReview = catchAsyncErrors(async (req,res,next) => {
 
 //get all movie title for search function => /api/v1/movies/title
 exports.getMovieTitles = catchAsyncErrors(async (req,res,next) => {
-    const title = await Movie.distinct(title);
+    const titles = await Movie.distinct('title');
 
 
     res.status(200).json({
         success:true,
-        message:'Review Data.'
+        message:'Review Data.',
+        titles
     })
 })

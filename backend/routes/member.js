@@ -19,7 +19,7 @@ router.route('/members').get(getAllMemberByRole);
 router.route('/members/:id').put(updateMember);
 router.route('/members/:id').delete(deleteMember);
 router.route('/members/new/reviews').put(createMemberReview);
-router.route('/members/all/reviews').get(getAllMemberNames);
+router.route('/members/all/names').get(getAllMemberNames);
 router.route('/members/delete/reviews').delete(deleteMemberReview);
 
 

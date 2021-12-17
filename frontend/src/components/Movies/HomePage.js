@@ -1,9 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { getAllMovies, setHasMore } from '../../redux/movieSlice';
+import { getAllMovies, getMovieTitles, setHasMore } from '../../redux/movieSlice';
 import InfiniteScroll from "react-infinite-scroll-component";
-import { CardMedia, Grid, Paper } from '@mui/material';
+import { CardMedia, Grid, Paper, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
+import SearchBar from '../common/SearchBar';
+import { clearMovie } from '../../redux/movieSlice';
+import RatingFilter from '../common/RatingFilter';
+
 
 const style = {
     height: 30,
@@ -14,19 +18,24 @@ const style = {
 
 const HomePage = () => {
     
-    const { movies, moviesCount, filteredMoviesCount, hasMore, page } = useSelector(state => state.movie);
+    const { movies, titles, moviesCount, filteredMoviesCount, hasMore, page } = useSelector(state => state.movie);
+    const { keywords } = useSelector(state => state.filter);
     const dispatch = useDispatch();
 
 
     useEffect(() => {
-            fetchMoreData()
+      dispatch(getMovieTitles())
+      fetchMoreData()
+      return() => {
+        console.log('movies Cleaned');
+        dispatch(clearMovie())
+       }
         }, [])
 
     console.log(movies);
 
     const fetchMoreData = () => {
-        dispatch (getAllMovies({page}));
-        if(movies.length < 0 && movies.length >= filteredMoviesCount) return dispatch(setHasMore(false));
+        dispatch (getAllMovies({page, ...keywords}));
       };
     
     return ( 
@@ -35,11 +44,20 @@ const HomePage = () => {
 <div>
         <h1>demo: react-infinite-scroll-component</h1>
         <hr />
+        <Box sx={{m:2}}>
+          <SearchBar items={titles} label="Search Movie"/>
+        </Box>
+        <Box sx={{m:2}}>
+          <RatingFilter/>
+        </Box>
         <InfiniteScroll
           dataLength={movies.length}
           next={fetchMoreData}
-          hasMore={hasMore}
+          hasMore={movies.length >= filteredMoviesCount ? false : true}
           loader={movies.length >= filteredMoviesCount ? <h4>Wala na...</h4> : <h4>Loading...</h4>}
+          endMessage={
+            <h4>End Result...</h4>
+          }
         >
         <Grid container spacing={2} sx={{p:2}}>
             {movies.map(movie => (

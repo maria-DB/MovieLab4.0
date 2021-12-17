@@ -37,9 +37,23 @@ export const getProducerDetail = createAsyncThunk(
     
 )
 
+export const getProducerNames = createAsyncThunk(
+    'producer/getProducerNames',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`/api/v1/members/all/names?role=Producer`)
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
 const initialState = {
     members:[],
     producer:null,
+    producerNames:[],
     membersCount:0,
     resPerPage:20,
     isLoading:false,
@@ -59,6 +73,11 @@ const producerSlice = createSlice({
         },
         setPage : (state,action) => {
             state.page = action.payload
+        },
+        clearProducer :(state) => {
+            state.members = []
+            state.page = 1
+
         }
     },
     extraReducers: {
@@ -83,11 +102,29 @@ const producerSlice = createSlice({
             state.producer = action.payload.member
             state.isLoading = false
     },
-    [getProducerDetail.rejected] : (state,action) => {
+        [getProducerDetail.rejected] : (state,action) => {
         state.errors = action.payload
         state.isLoading =false
+    },
+    [getProducerNames.pending] : (state) => {
+        state.isLoading = true
+    },
+    [getProducerNames.fulfilled] : (state,action) => {
+
+        const names = []
+
+        action.payload.names.reduce((obj,item) => {
+            return names.push({"title" : item})
+        })
+        state.producerNames = names
+        state.isLoading = false
+    },
+    [getProducerNames.rejected] : (state,action) => {
+        state.errors = action.payload
+        state.isLoading = false
     }
+
 }
 })
-export const { setHasMore, setPage } = producerSlice.actions
+export const { setHasMore, setPage, clearProducer } = producerSlice.actions
 export default producerSlice.reducer

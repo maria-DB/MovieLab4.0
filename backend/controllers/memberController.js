@@ -219,7 +219,8 @@ exports.deleteMemberReview = catchAsyncErrors(async (req,res,next) => {
 
 //get all members for search function => /api/v1/members/all/names
 exports.getAllMemberNames = catchAsyncErrors(async (req,res,next) => {
-    const names = await Member.distinct('name');
+    // const names = await Member.distinct('name');
+    const names = await Member.find().where('role', req.query.role).distinct('name')
 
 
     res.status(200).json({
