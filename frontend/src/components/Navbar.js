@@ -19,7 +19,7 @@ import GoogleLogoutHook from '../components/common/GoogleLogoutHook';
 import { clearFilters } from '../redux/filterSlice';
 
 const Navbar = () => {
-    const pages = [{ name: 'Movies', link: '/'}, {name :'Actors', link: '/actors'},{name :'Producers', link: '/producers'}];
+    const pages = [{ name: 'Movies', link: '/'}, {name :'Actors', link: '/actors'},{name :'Producers', link: '/producers'}, {name : 'Dashboard', link: '/dashboard'}];
     const settings = ['Logout'];
   
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -54,7 +54,7 @@ const Navbar = () => {
               component="div"
               sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
             >
-              AFLEX
+              MOVIELAB 4.0
             </Typography>
   
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

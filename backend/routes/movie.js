@@ -19,7 +19,7 @@ router.route('/movies/:id').get(getMovie);
 router.route('/movies/:id').put(updateMovie);
 router.route('/movies/:id').delete(deleteMovie);
 router.route('/review').put(createMovieReview);
-router.route('/review/delete').put(deleteMovieReview);
+router.route('/review/delete').delete(deleteMovieReview);
 router.route('/movies/all/titles').get(getMovieTitles);
 
 module.exports = router

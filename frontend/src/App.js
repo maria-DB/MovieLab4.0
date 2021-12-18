@@ -14,6 +14,7 @@ import React from 'react';
 import MovieDetails from './components/Movies/MovieDetails';
 import ActorDetails from './components/Actors/ActorDetails';
 import ProducerDetails from './components/Producers/ProducerDetails';
+import Dashboard from './components/common/Dashboard';
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
             <Route exact path="/actors/:id" element={<ActorDetails/>} />
             <Route exact path="/producers" element={<Producer/>} />
             <Route exact path="/producers/:id" element={<ProducerDetails/>} />
+            <Route exact path="/dashboard" element={<Dashboard/>} />
           </Routes>
       </div>
     </Router>

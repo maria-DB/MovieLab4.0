@@ -19,10 +19,12 @@ app.use(fileUpload());
 const movies = require('./routes/movie');
 const members = require('./routes/member');
 const users = require('./routes/user');
+const dashboard = require('./routes/dashboard');
 
 app.use('/api/v1', movies);
 app.use('/api/v1', members);
 app.use('/api/v1', users);
+app.use('/api/v1', dashboard);
 
 var route, routes = [];
 app._router.stack.forEach(function(middleware){

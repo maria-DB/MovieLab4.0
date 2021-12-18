@@ -31,7 +31,8 @@ let genres = [
 
 let movieType = [
     'TV Show',
-    'Film'
+    'Film',
+    'Movie'
 ]
 
 const getSingleMovie = async(id) => {
@@ -41,7 +42,7 @@ const getSingleMovie = async(id) => {
                 title: response.data.Title.substr(0,78),
                 year: response.data.Year,
                 ratings: parseInt(Math.random() * 11),
-                movieType: movieType[parseInt(Math.random() * 2)],
+                movieType: movieType[parseInt(Math.random() * 3)],
                 date_released: Date.now(),
                 runtime: response.data.Runtime.split(' ')[0],
                 genre: genres[parseInt(Math.random() * 7)],
@@ -75,6 +76,10 @@ const getOMDBmovies = async() => {
     }
 }
 
+function getRandomNumberBetween(min,max){
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+
 const seedMembers = async () => {
     try {
         let Members = [];
@@ -93,7 +98,7 @@ const seedMembers = async () => {
                             name:element.name,
                             role:roles[Math.floor(Math.random()*3) + 1],
                             bio:element.company.catchPhrase,
-                            ratings: (Math.random()*9 + 1).toFixed(1),
+                            ratings: getRandomNumberBetween(1,5),
                             avatar: [
                                 {
                                     public_id:element.name,

@@ -27,7 +27,8 @@ export const getMovie = createAsyncThunk(
     'movie/getMovie', 
     async(obj, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`/api/v1/movies/${obj.id}`)
+            const response = await axios.get(`/api/v1/movies/${obj.id.id}`)
+            response.data.user = obj.user._id
             return response.data
 
         } catch (error) {
@@ -51,10 +52,41 @@ export const getMovieTitles = createAsyncThunk(
     }
 )
 
+export const deleteReview =  createAsyncThunk(
+    'movie/deleteReview',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.delete(`/api/v1/review/delete?id=${obj.id}&movieId=${obj.movieId}`)
+            return response.data
+            
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
+export const createMovieReview = createAsyncThunk(
+    'movie/createMovieReview',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.put(`/api/v1/review`, {...obj});
+            response.data.review = obj;
+            return response.data
+            
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
 const initialState = {
     movies:[],
     titles:[],
     movie:null,
+    reviews:[],
+    userReview:null,
     moviesCount:0,
     resPerPage:20,
     filteredMoviesCount:0,
@@ -62,6 +94,7 @@ const initialState = {
     errors:null,
     hasMore:true,
     page:1,
+    message:'',
 };
 
 
@@ -103,6 +136,8 @@ const movieSlice = createSlice({
     },
     [getMovie.fulfilled] : (state,action) => {
         state.movie = action.payload.movie
+        state.reviews = [...action.payload.movie.reviews.filter(review => review.user !== action.payload.user)]
+        state.userReview = action.payload.movie.reviews.filter(review => review.user === action.payload.user)
         state.isLoading = false
     },
     [getMovie.rejected] : (state,action) => {
@@ -125,7 +160,31 @@ const movieSlice = createSlice({
     [getMovieTitles.rejected] : (state,action) => {
         state.errors = action.payload
         state.isLoading = false
-    }
+    },
+    [deleteReview.pending] : (state) => {
+        state.isLoading = true
+    },
+    [deleteReview.fulfilled] : (state,action) => {
+        state.message = action.payload.message
+        state.userReview = null
+        state.isLoading  = false
+    },
+    [deleteReview.rejected] : (state,action) => {
+        state.errors = action.payload
+        state.isLoading = false
+    },
+    [createMovieReview.pending] : (state) => {
+        state.isLoading = true
+    },
+    [createMovieReview.fulfilled] : (state,action) => {
+        state.reviews = [...action.payload.reviews.filter(review => review.user !== action.payload.review.user._id)]
+        state.userReview = action.payload.reviews.filter(review => review.user === action.payload.review.user._id)
+        state.isLoading = false
+    },
+    [createMovieReview.rejected] : (state,action) => {
+        state.errors = action.payload
+        state.isLoading = false
+    },
 }
 })
 export const { setHasMore, setPage, clearMovie } = movieSlice.actions

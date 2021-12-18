@@ -26,7 +26,9 @@ export const getActorDetail = createAsyncThunk(
     'actor/getActorDetail', 
     async(obj, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`/api/v1/members/${obj.id}`)
+            console.log(obj);
+            const response = await axios.get(`/api/v1/members/${obj.id.id}`)
+            response.data.user = obj.user._id
             return response.data
 
         } catch (error) {
@@ -47,12 +49,41 @@ export const getActorNames = createAsyncThunk(
         }
     }
 )
+export const createActorReview = createAsyncThunk(
+    'actor/createActorReview',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.put(`/api/v1/members/new/reviews`, {...obj});
+            response.data.review = obj;
+            return response.data
+            
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+export const deleteReview =  createAsyncThunk(
+    'actor/deleteReview',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.delete(`/api/v1/members/delete/reviews?id=${obj.id}&memberId=${obj.memberId}`)
+            return response.data
+            
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
     
 
 const initialState = {
     members:[],
     actorNames:[],
     actor:null,
+    reviews:[],
+    userReview:null,
     membersCount:0,
     resPerPage:20,
     isLoading:false,
@@ -92,35 +123,62 @@ const actorSlice = createSlice({
         [getAllActor.rejected] : (state,action) => {
             state.errors = action.payload
             state.isLoading = false
-    },
-    [getActorDetail.pending] : (state) => {
-        state.isLoading = true
-},
-    [getActorDetail.fulfilled] : (state,action) => {
-        state.actor = action.payload.member
-        state.isLoading = false
-},
-    [getActorDetail.rejected] : (state,action) => {
-    state.errors = action.payload
-    state.isLoading =false
-},[getActorNames.pending] : (state) => {
-    state.isLoading = true
-},
-[getActorNames.fulfilled] : (state,action) => {
+        },
+        [getActorDetail.pending] : (state) => {
+            state.isLoading = true
+        },
+        [getActorDetail.fulfilled] : (state,action) => {
+            state.actor = action.payload.member
+            state.reviews = [...action.payload.member.reviews.filter(review => review.user !== action.payload.user)]
+            state.userReview = action.payload.member.reviews.filter(review => review.user === action.payload.user)
+            state.isLoading = false
+        },
+        [getActorDetail.rejected] : (state,action) => {
+            state.errors = action.payload
+            state.isLoading =false
+        },
+        [getActorNames.pending] : (state) => {
+            state.isLoading = true
+        },
+        [getActorNames.fulfilled] : (state,action) => {
 
-    const names = []
+            const names = []
 
-    action.payload.names.reduce((obj,item) => {
-        return names.push({"title" : item})
-    })
-    state.actorNames = names
-    state.isLoading = false
-},
-[getActorNames.rejected] : (state,action) => {
-    state.errors = action.payload
-    state.isLoading = false
-}
-}
+            action.payload.names.reduce((obj,item) => {
+            return names.push({"title" : item})
+            })
+            state.actorNames = names
+            state.isLoading = false
+        },
+        [getActorNames.rejected] : (state,action) => {
+            state.errors = action.payload
+            state.isLoading = false
+        },
+        [createActorReview.pending] : (state) => {
+            state.isLoading = true
+        },
+        [createActorReview.fulfilled] : (state,action) => {
+            state.reviews = [...action.payload.reviews.filter(review => review.user !== action.payload.review.user._id)]
+            state.userReview = action.payload.reviews.filter(review => review.user === action.payload.review.user._id)
+            state.isLoading = false
+        },
+        [createActorReview.rejected] : (state,action) => {
+            state.errors = action.payload
+            state.isLoading = false
+        },
+        [deleteReview.pending] : (state) => {
+            state.isLoading = true
+        },
+        [deleteReview.fulfilled] : (state,action) => {
+            state.message = action.payload.message
+            state.userReview = null
+            state.isLoading  = false
+        },
+        [deleteReview.rejected] : (state,action) => {
+            state.errors = action.payload
+            state.isLoading = false
+        },
+    }
 })
 export const { setHasMore, setPage, clearActors } = actorSlice.actions
 export default actorSlice.reducer

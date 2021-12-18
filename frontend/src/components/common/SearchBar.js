@@ -16,11 +16,6 @@ const SearchBar = ({items,label}) => {
     const path = window.location.pathname
     console.log(path);
 
-    useEffect(() => {
-        return () => {
-            dispatch(clearFilters())
-        }
-    }, [])
 
     const handleSearch = (e) => {
         // e.preventDefault();
@@ -43,6 +38,30 @@ const SearchBar = ({items,label}) => {
 
     const handleAutoComplete = (event,value,reason) => {
         event.preventDefault();
+
+        if(reason === 'clear') {
+            dispatch(clearFilters());
+            switch (path) {
+                case '/':
+                    dispatch(clearMovie());
+                    // dispatch(clearFilters());
+                    dispatch(getAllMovies({}));
+                    return;
+                case '/actors':
+                    dispatch(clearActors());
+                    // dispatch(clearFilters());
+                    dispatch(getAllActor({}));
+                    return;
+                case '/producers':
+                    dispatch(clearProducer());
+                    // dispatch(clearFilters());
+                    dispatch(getAllProducer({}));
+                    return;
+                default:
+                break;
+            };  
+        }
+
         if (path === '/') return dispatch(setKeywords({...keywords, title: value}));
         if (path === '/actors') return dispatch(setKeywords({...keywords, name: value}));
         if (path === '/producers') return dispatch(setKeywords({...keywords, name: value}));

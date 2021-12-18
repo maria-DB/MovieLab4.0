@@ -5,6 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { CardMedia, Grid, Box, Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchBar from '../common/SearchBar';
+import RatingFilter from '../common/RatingFilter';
 
 
 const style = {
@@ -44,6 +45,9 @@ const Actor = () => {
         <Box sx={{m:2}}>
           <SearchBar items={actorNames}  label="Search Actor"/>
         </Box>
+        <Box sx={{m:2}} style={{ float: 'right'}}>
+          <RatingFilter/>
+        </Box>
         <InfiniteScroll
           dataLength={members.length}
           next={fetchMoreData}
@@ -55,7 +59,7 @@ const Actor = () => {
         >
         <Grid container spacing={2} sx={{p:2}}>
             {members.map(member => (
-                <Grid item lg={4} md={4} key={member._id} sm={4} xs={12}>
+                <Grid item lg={3} md={3} key={member._id} sm={3} xs={12}>
                   <Link to={`/actors/${member._id}`}>
                     <Paper elevation={4} sx={{p:2}}>
                         <CardMedia
@@ -71,8 +75,6 @@ const Actor = () => {
                                 </Grid>
                             ))}
                             </Grid>
-
-           
         </InfiniteScroll>
       </div>
         </>

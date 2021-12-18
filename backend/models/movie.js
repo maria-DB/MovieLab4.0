@@ -13,10 +13,15 @@ const movieSchema = new mongoose.Schema({
         enum: {
             values: [
                 'TV Show',
-                'Film'
+                'Film',
+                'Movie'
             ],
             message: 'Please select correct genre for movie'
         }
+    },
+    gross: {
+        type : Number,
+        default : 0,
     },
     year : {
         type : Number,

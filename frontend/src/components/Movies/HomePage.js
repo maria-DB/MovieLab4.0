@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import SearchBar from '../common/SearchBar';
 import { clearMovie } from '../../redux/movieSlice';
 import RatingFilter from '../common/RatingFilter';
+import YearFilter from '../common/YearFilter';
+
 
 
 const style = {
@@ -47,9 +49,17 @@ const HomePage = () => {
         <Box sx={{m:2}}>
           <SearchBar items={titles} label="Search Movie"/>
         </Box>
+
+        <div style={{ float: 'right'}}>
         <Box sx={{m:2}}>
           <RatingFilter/>
-        </Box>
+          <YearFilter/>
+                       {/* <Paper sx={{padding:'5%',borderRadius:'10px', display:'flex', justifyContent:'center', alignItems:'center'}} elevation={6}>
+                            <getPopularMovies/>
+                        </Paper> */}
+        </Box></div>
+
+        
         <InfiniteScroll
           dataLength={movies.length}
           next={fetchMoreData}
@@ -61,12 +71,12 @@ const HomePage = () => {
         >
         <Grid container spacing={2} sx={{p:2}}>
             {movies.map(movie => (
-                <Grid item lg={4} md={4} key={movie._id} sm={4} xs={12}>
+                <Grid item lg={2} md={2} key={movie._id} sm={2} xs={12}>
                     <Link to={`/movies/${movie._id}`}>
                     <Paper elevation={4} sx={{p:2}}>
                         <CardMedia
                             component="img"
-                            height="194"
+                            height="200"
                             image={movie.posters[0].url}
                             alt={movie.posters[0].public_url}
                             sx={{pb:2}}

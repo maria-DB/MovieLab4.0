@@ -184,11 +184,12 @@ exports.createMemberReview = catchAsyncErrors(async (req,res,next) =>{
 
     member.ratings = member.reviews.reduce((acc,item) => item.rating + acc, 0) / member.reviews.length
 
-    await member.save({validateBeforeSave : false});
+    const actorReview = await member.save({validateBeforeSave : false});
 
     res.status(200).json({
         success:true,
-        message: 'Member Updated'
+        message: 'Member Updated',
+        reviews: actorReview.reviews
     })
 
 })

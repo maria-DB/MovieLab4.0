@@ -6,7 +6,7 @@ export const loginUser = createAsyncThunk(
     'user/login',
     async(obj, {rejectWithValue}) => {
         try {
-            const response = await axios.post('api/v1/login', {...obj})
+            const response = await axios.post('/api/v1/login', {...obj})
             return response.data
             
         } catch (error) {
@@ -21,7 +21,7 @@ export const logout = createAsyncThunk(
     'user/logout',
     async(obj, {rejectWithValue}) => {
     try {
-        const response = await axios.get('api/v1/logout')
+        const response = await axios.get('/api/v1/logout')
         return response.data
         
     } catch (error) {
@@ -37,7 +37,7 @@ export const registerUser = createAsyncThunk(
     'user/register',
     async(obj, {rejectWithValue}) => {
         try {
-            const response = await axios.post('api/v1/users',obj,{
+            const response = await axios.post('/api/v1/users',obj,{
                 headers: {
                     "Content-Type" : "multipart/data"
                 }
@@ -57,7 +57,7 @@ export const getUserInfo = createAsyncThunk(
     'user/getUserInfo',
     async(obj, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`api/v1/users/${obj.id}`)
+            const response = await axios.get(`/api/v1/users/${obj.id}`)
             return response.data
             
         } catch (error) {

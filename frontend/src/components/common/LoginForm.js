@@ -48,7 +48,9 @@ const LoginForm = () => {
             }
         <Grid item>
             <TextField id="email" label="Email" variant="standard" fullWidth value={email} onChange={(e) => { setError(''); dispatch(clearError()); dispatch(setEmail(e.target.value));}} />
+            <TextField label="Password" variant="standard" fullWidth/>
             <Button variant="outlined" color="primary" fullWidth sx={{mt:2,mb:2}} onClick={handleSignIn}>Sign in</Button>
+            
         </Grid>
         OR
         <Grid item sx={{mt:2}}>

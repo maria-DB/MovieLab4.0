@@ -6,6 +6,8 @@ import { CardMedia, Grid, Paper, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchBar from '../common/SearchBar';
 import { clearActors } from '../../redux/actorSlice';
+import RatingFilter from '../common/RatingFilter';
+import YearFilter from '../common/YearFilter';
 
 
 const style = {
@@ -46,6 +48,9 @@ const Producer = () => {
         <hr />
         <Box sx={{m:2}}>
           <SearchBar items={producerNames}  label="Search Producer"/>
+        </Box>
+        <Box sx={{m:2}}>
+          <RatingFilter/>
         </Box>
         <InfiniteScroll
           dataLength={members.length}
