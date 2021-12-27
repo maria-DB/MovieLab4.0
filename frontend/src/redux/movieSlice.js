@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+
 export const getAllMovies = createAsyncThunk(
     'movie/getAllMovies',
     async(obj,{rejectWithValue}) => {
@@ -74,6 +75,39 @@ export const createMovieReview = createAsyncThunk(
             response.data.review = obj;
             return response.data
             
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
+export const deleteMovie = createAsyncThunk(
+    'movie/deleteMovie',
+    async(obj, { rejectWithValue}) => {
+        try {
+            console.log(obj)
+            const response = await axios.delete(`/api/v1/movies/${obj}`)
+            response.data.movieId = obj
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
+export const createMovie = createAsyncThunk(
+    'movie/createMovie',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.post(`/api/v1/movies/create`,obj, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+
+            })
+            return response.data
         } catch (error) {
             return rejectWithValue(error.response.data)
             
@@ -185,6 +219,32 @@ const movieSlice = createSlice({
         state.errors = action.payload
         state.isLoading = false
     },
+    [deleteMovie.pending] : (state) =>{
+        state.isLoading = true
+    },
+    [deleteMovie.fulfilled] : (state,action) => {
+
+        state.message = action.payload.message
+        state.movies = [...state.movies.filter(movie => movie._id !== action.payload.movieId)]
+        state.isLoading = false
+    },
+    [deleteMovie.rejected] : (state,action) => {
+        state.errors = action.payload
+        state.isLoading = false
+    },
+    [createMovie.pending] : (state) => {
+        state.isLoading = true
+    },
+    [createMovie.fulfilled] : (state,action) => {
+        state.message = action.payload.message
+        state.movies = [action.payload.movie,...state.movies]
+        state.isLoading = false
+    },
+    [createMovie.rejected] : (state, action) => {
+        state.errors = action.payload
+        state.isLoading = false
+
+    }
 }
 })
 export const { setHasMore, setPage, clearMovie } = movieSlice.actions

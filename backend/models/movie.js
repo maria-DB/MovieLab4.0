@@ -28,7 +28,7 @@ const movieSchema = new mongoose.Schema({
         default : new Date().getFullYear()
     },
     date_released : {
-        type : Number,
+        type : Date,
         default: Date.now
     },
     runtime : {

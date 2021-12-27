@@ -20,14 +20,15 @@ console.log(value);
 
 
 useEffect(() => {
+    if(keywords !== null && keywords.hasOwnProperty('year')) {
     switch (path) {
         case '/':
             dispatch(clearMovie());
             dispatch(getAllMovies({...keywords}));
             break;
-
         default:
             break;
+            }
     }
     
 }, [value]) 

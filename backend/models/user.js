@@ -25,7 +25,19 @@ const userSchema = new mongoose.Schema({
                 required: true
             },
         }
-    ]
+    ],
+    role : {
+        type : String,
+        required: [true, 'Select role for this person'],
+        enum: {
+            values: [
+                'Admin',
+                'User',
+            ],
+            message: 'Select Role for this Person'
+        }
+
+    },
 })
 
 // Return JWT token

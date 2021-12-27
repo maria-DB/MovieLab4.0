@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+
 export const getAllActor = createAsyncThunk(
     'actor/getAllActor',
     async(obj,{rejectWithValue}) => {
@@ -76,11 +77,27 @@ export const deleteReview =  createAsyncThunk(
         }
     }
 )
+
+export const deleteActor = createAsyncThunk(
+    'actor/deleteActor',
+    async(obj, { rejectWithValue}) => {
+        try {
+            console.log(obj)
+            const response = await axios.delete(`/api/v1/members/${obj}`)
+            response.data.actorId = obj
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
     
 
 const initialState = {
     members:[],
     actorNames:[],
+    actorNamesWithId: [],
     actor:null,
     reviews:[],
     userReview:null,
@@ -107,6 +124,10 @@ const actorSlice = createSlice({
         clearActors : (state) =>{
             state.members = []
             state.page = 1
+        },
+        clearActorsNames : (state) => {
+            state.actorNames = []
+            state.clearActorsNames = []
         }
     },
     extraReducers: {
@@ -148,6 +169,7 @@ const actorSlice = createSlice({
             return names.push({"title" : item})
             })
             state.actorNames = names
+            state.actorNamesWithId = action.payload.name_id
             state.isLoading = false
         },
         [getActorNames.rejected] : (state,action) => {
@@ -178,7 +200,20 @@ const actorSlice = createSlice({
             state.errors = action.payload
             state.isLoading = false
         },
+        [deleteActor.pending] : (state) =>{
+            state.isLoading = true
+        },
+        [deleteActor.fulfilled] : (state,action) => {
+    
+            state.message = action.payload.message
+            state.members = [...state.members.filter(member => member._id !== action.payload.actorId)]
+            state.isLoading = false
+        },
+        [deleteActor.rejected] : (state,action) => {
+            state.errors = action.payload
+            state.isLoading = false
+        },
     }
 })
-export const { setHasMore, setPage, clearActors } = actorSlice.actions
+export const { setHasMore, setPage, clearActors, clearActorsNames } = actorSlice.actions
 export default actorSlice.reducer

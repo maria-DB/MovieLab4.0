@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { getAllProducer, getProducerNames, setHasMore } from '../../redux/producerSlice';
+import { deleteProducer, getAllProducer, getProducerNames, setHasMore } from '../../redux/producerSlice';
 import InfiniteScroll from "react-infinite-scroll-component";
-import { CardMedia, Grid, Paper, Box } from '@mui/material';
+import { CardMedia, Grid, Paper, Box, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchBar from '../common/SearchBar';
 import { clearActors } from '../../redux/actorSlice';
 import RatingFilter from '../common/RatingFilter';
 import YearFilter from '../common/YearFilter';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import Snack from '../common/Snack';
 
 const style = {
     height: 30,
@@ -19,9 +20,11 @@ const style = {
 
 const Producer = () => {
     
-    const { members, membersCount, producerNames, hasMore, page } = useSelector(state => state.producer);
+    const { members, membersCount, producerNames, hasMore, page, message } = useSelector(state => state.producer);
     const { keywords } = useSelector(state => state.filter);
+    const { user } = useSelector(state => state.user);
     const dispatch = useDispatch();
+    const [snack, setSnack] = useState({message:'', open:false});
 
 
     useEffect(() => {
@@ -38,6 +41,14 @@ const Producer = () => {
         dispatch (getAllProducer({...keywords, page}));
 
       };
+
+      const handleDelete = (e,member) => {
+        e.preventDefault();
+        dispatch(deleteProducer(member));
+        setTimeout(() => {
+          setSnack({message : message !== '' ? message : 'Producer Successfully Deleted', open:true});
+        },1000);
+      }
     
     return ( 
         <>
@@ -46,11 +57,19 @@ const Producer = () => {
 <div>
         <h1>demo: react-infinite-scroll-component</h1>
         <hr />
+        { snack &&
+          <Snack
+          handleOnClose={() => { setSnack({...snack, open:false}) }}
+          message={snack.message}
+          snackState={snack.open}
+          timeOpen={6000}
+          />
+        }
         <Box sx={{m:2}}>
           <SearchBar items={producerNames}  label="Search Producer"/>
         </Box>
         <Box sx={{m:2}}>
-          <RatingFilter/>
+          {/* <RatingFilter/> */}
         </Box>
         <InfiniteScroll
           dataLength={members.length}
@@ -64,23 +83,26 @@ const Producer = () => {
         <Grid container spacing={2} sx={{p:2}}>
             {members.map(member => (
                 <Grid item lg={4} md={4} key={member._id} sm={4} xs={12}>
-                  <Link to={`/producers/${member._id}`}>
-                    <Paper elevation={4} sx={{p:2}}>
+                  <Paper elevation={4} sx={{p:2}}>
+                    <Link to={`/producers/${member._id}`}>
                         <CardMedia
                             component="img"
                             height="194"
                             image={member.avatar[0].url}
                             alt={member.avatar[0].public_url}
                             sx={{pb:2}}
-                                        />
-                                        {member.name}
-                                    </Paper>
-                                    </Link>
-                                </Grid>
-                            ))}
-                            </Grid>
-
-           
+                        />
+                          {member.name}
+                    </Link>
+                    <Box>
+                      {
+                        (user && user.role === 'Admin') && <Button variant='contained' color='error' onClick={ (e) => { handleDelete(e,member._id)} }><DeleteIcon></DeleteIcon></Button>
+                      }
+                    </Box>
+                  </Paper>
+                </Grid>
+            ))}
+        </Grid>
         </InfiniteScroll>
       </div>
         </>

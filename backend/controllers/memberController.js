@@ -222,12 +222,21 @@ exports.deleteMemberReview = catchAsyncErrors(async (req,res,next) => {
 exports.getAllMemberNames = catchAsyncErrors(async (req,res,next) => {
     // const names = await Member.distinct('name');
     const names = await Member.find().where('role', req.query.role).distinct('name')
+    const name_id = await Member.find().where('role', req.query.role)
 
 
     res.status(200).json({
         success:true,
         message:'All members in the Data.',
-        names
+        names,
+        name_id: name_id.map(name => { 
+            return {
+                _id:name._id, 
+                name: name.name, 
+                title:name.name.concat(` - ${name._id}`),
+                role:name.role
+            }
+        })
 
     })
 })

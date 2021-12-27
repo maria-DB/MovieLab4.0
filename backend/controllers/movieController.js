@@ -31,6 +31,7 @@ exports.createMovie = catchAsyncErrors(async(req, res, next) => {
     }
 
     req.body.posters = ImageLinks
+    req.body.members = JSON.parse(req.body.members)
 
     const movie = await Movie.create(req.body);
 
@@ -111,6 +112,7 @@ exports.updateMovie = catchAsyncErrors(async (req,res,next)=>{
         }
 
         req.body.posters = imageLinks
+        
     }
 
     movie = await Movie.findByIdAndUpdate(req.params.id,req.body, {

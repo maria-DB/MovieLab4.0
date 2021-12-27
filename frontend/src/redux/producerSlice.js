@@ -50,10 +50,26 @@ export const getProducerNames = createAsyncThunk(
     }
 )
 
+export const deleteProducer = createAsyncThunk(
+    'producer/deleteProducer',
+    async(obj, { rejectWithValue}) => {
+        try {
+            console.log(obj)
+            const response = await axios.delete(`/api/v1/members/${obj}`)
+            response.data.producerId = obj
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
 const initialState = {
     members:[],
     producer:null,
     producerNames:[],
+    producerNamesWithId: [],
     membersCount:0,
     resPerPage:20,
     isLoading:false,
@@ -78,6 +94,10 @@ const producerSlice = createSlice({
             state.members = []
             state.page = 1
 
+        },
+        clearProducerNames : (state) => {
+            state.producerNames = []
+            state.producerNames = []
         }
     },
     extraReducers: {
@@ -117,14 +137,28 @@ const producerSlice = createSlice({
             return names.push({"title" : item})
         })
         state.producerNames = names
+        state.producerNamesWithId = action.payload.name_id
         state.isLoading = false
     },
     [getProducerNames.rejected] : (state,action) => {
         state.errors = action.payload
         state.isLoading = false
-    }
+    },
+    [deleteProducer.pending] : (state) =>{
+        state.isLoading = true
+    },
+    [deleteProducer.fulfilled] : (state,action) => {
+
+        state.message = action.payload.message
+        state.members = [...state.members.filter(member => member._id !== action.payload.producerId)]
+        state.isLoading = false
+    },
+    [deleteProducer.rejected] : (state,action) => {
+        state.errors = action.payload
+        state.isLoading = false
+    },
 
 }
 })
-export const { setHasMore, setPage, clearProducer } = producerSlice.actions
+export const { setHasMore, setPage, clearProducer, clearProducerNames } = producerSlice.actions
 export default producerSlice.reducer

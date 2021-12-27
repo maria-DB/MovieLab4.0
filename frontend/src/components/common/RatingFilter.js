@@ -17,6 +17,7 @@ const RatingFilter = () => {
 
 
     useEffect(() => {
+        if(keywords !== null && keywords.hasOwnProperty('ratings')){
         switch (path) {
             case '/':
                 dispatch(clearMovie());
@@ -32,6 +33,7 @@ const RatingFilter = () => {
             break;
             default:
                 break;
+        }
         }
         
     }, [selected])
