@@ -5,10 +5,12 @@
         "avatar": {
             "public_id" : "admin",
             "url": "https://ui-avatars.com/api/?name=admin"
-        }
+        },
+        "role": "Admin"
     },
     {
         "name":"testing",
-        "email":"testuser@gmail.com"
+        "email":"testuser@gmail.com",
+        "role": "Admin"
     }
 ]

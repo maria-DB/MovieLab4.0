@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { deleteReview, getMovie } from "../../redux/movieSlice";
 import Comment from "../common/Comment";
 import MovieReview from "./MovieReview";
+import { Link } from "react-router-dom";
 
 
 
@@ -32,9 +33,28 @@ const MovieDetails = () => {
             <p>{movie && movie.posters.map(poster => {
                 return <img src={poster.url} alt={poster.public_url} />
             })}</p>
-            <p>Type: {movie && movie.movieType}</p>
-            <p>Genre: {movie && movie.genre}</p>
-            <p>Plot: {movie && movie.plot}</p>
+            <p><b>Type:</b> {movie && movie.movieType}</p>
+            <p><b>Genre:</b> {movie && movie.genre}</p>
+            <p><b>Plot:</b> {movie && movie.plot}</p>
+            
+            <h4>Actors/Actress</h4>
+            { (movie && movie.members) &&
+                movie.members.filter(member => member.role === 'Actor' || member.role === 'Actress')
+                .map(item => {
+                    return <>
+                        <Link to={`/actors/${item.user}`} key={item.user}>{item.name}</Link><br/>
+                    </>
+                })
+            }
+            <h4>Producers</h4>
+            { (movie && movie.members) &&
+                movie.members.filter(member => member.role === 'Producer')
+                .map(item => {
+                    return <>
+                        <Link to={`/producers/${item.user}`} key={item.user}>{item.name}</Link><br/>
+                    </>
+                })
+            }
 
             <Box sx={{m:2}}>
                 <h4>Reviews</h4>

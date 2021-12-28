@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
 import { deleteMovie, getAllMovies, getMovieTitles, setHasMore } from '../../redux/movieSlice';
 import InfiniteScroll from "react-infinite-scroll-component";
-import { CardMedia, Grid, Paper, Box, Button } from '@mui/material';
+import { CardMedia, Grid, Paper, Box, Button, Backdrop, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchBar from '../common/SearchBar';
 import { clearMovie } from '../../redux/movieSlice';
@@ -13,6 +13,8 @@ import Snack from '../common/Snack';
 import Create from './Create';
 import { clearActorsNames, getActorNames } from '../../redux/actorSlice';
 import { clearProducerNames, getProducerNames } from '../../redux/producerSlice';
+import Edit from './Edit';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 const style = {
@@ -24,7 +26,7 @@ const style = {
 
 const HomePage = () => {
     
-    const { movies, titles, moviesCount, filteredMoviesCount, hasMore, page, message } = useSelector(state => state.movie);
+    const { movies, titles, isLoading, moviesCount, filteredMoviesCount, hasMore, page, message } = useSelector(state => state.movie);
     const { keywords } = useSelector(state => state.filter);
     const { user } = useSelector(state => state.user);
     const dispatch = useDispatch();
@@ -67,6 +69,16 @@ const HomePage = () => {
 <div>
         <h1>demo: react-infinite-scroll-component</h1>
         <hr />
+        { isLoading &&
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={true}
+            onClick={() => {return false}}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+
+        }
         { snack &&
           <Snack
           handleOnClose={() => { setSnack({...snack, open:false}) }}
@@ -118,7 +130,12 @@ const HomePage = () => {
                       </Link>
                       <Box>
                       {
-                        (user && user.role === 'Admin') && <Button variant='contained' color='error' onClick={ (e) => { handleDelete(e,movie._id)} }><DeleteIcon></DeleteIcon></Button>
+                        (user && user.role === 'Admin') && 
+                        <div>
+                          <Button variant='contained'fullWidth color='error' onClick={ (e) => { handleDelete(e,movie._id)} }><DeleteIcon></DeleteIcon></Button>
+                          <Edit id={movie._id} movie={movie}><EditIcon></EditIcon></Edit>
+                          
+                        </div>
                       }
                       </Box>
                     </Paper>

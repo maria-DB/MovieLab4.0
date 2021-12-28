@@ -1,7 +1,7 @@
 import { Box, Button, List } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { deleteReview, getActorDetail } from "../../redux/actorSlice";
 import Comment from "../common/Comment";
 import ActorReview from "./ActorReview";
@@ -26,12 +26,22 @@ const ActorDetails = () => {
     return ( 
         <>
         <div style={{padding: '10%'}}>
-            <p>{actor && actor.name}</p>
-            <p>{actor && actor.role}</p>
-            <p>{actor && actor.avatar.map(avatar => {
+            <p>{actor && actor.member.name}</p>
+            <p>{actor && actor.member.role}</p>
+            <p>{actor && actor.member.avatar.map(avatar => {
                 return <img src={avatar.url} alt={avatar.public_url} />
             })}</p>
             <p>{actor && actor.info}</p>
+            { actor && actor.movies &&
+                actor.movies.map(movie => {
+                    return <>
+                    <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+                    </>
+                }) 
+            }
+            
+
+            
             
 
             <Box sx={{m:2}}>

@@ -1,4 +1,5 @@
 const Member = require('../models/member');
+const Movie = require('../models/movie');
 
 const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
@@ -53,9 +54,18 @@ exports.memberDetail = catchAsyncErrors(async (req,res,next) => {
 
     if(!member) return next(new ErrorHandler('Member Not Found', 404));
 
+    // const query = req.query.role === 'Producer' ? {"producers.user" : req.params.id} : {"actors.user" : req.params.id}
+
+    const apiFeatures = new APIFeatures(Movie.find(), {"members.user" : req.params.id})
+    .search()
+    .filter()
+
+    let movies = await apiFeatures.query
+
     res.status(200).json({
         success:true,
-        member
+        member:{member, movies : movies.map(movie => { return { title: movie.title, _id: movie._id } }) }
+        // movies : 
     })
 })
 
@@ -105,7 +115,7 @@ exports.updateMember = catchAsyncErrors(async (req,res,next) => {
         let imageLinks = [];
 
         for(let i = 0; i < images.length; i++) {
-            const result = await cloudinary.v2.upluader.upload(images[i], {
+            const result = await cloudinary.v2.uploader.upload(images[i], {
                 folder : 'images'
             })
 

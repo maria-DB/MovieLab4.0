@@ -150,8 +150,8 @@ const actorSlice = createSlice({
         },
         [getActorDetail.fulfilled] : (state,action) => {
             state.actor = action.payload.member
-            state.reviews = [...action.payload.member.reviews.filter(review => review.user !== action.payload.user)]
-            state.userReview = action.payload.member.reviews.filter(review => review.user === action.payload.user)
+            state.reviews = [...action.payload.member.member.reviews.filter(review => review.user !== action.payload.user)]
+            state.userReview = action.payload.member.member.reviews.filter(review => review.user === action.payload.user)
             state.isLoading = false
         },
         [getActorDetail.rejected] : (state,action) => {
