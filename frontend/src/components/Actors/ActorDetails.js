@@ -55,7 +55,7 @@ const ActorDetails = () => {
                 {(userReview && userReview.length > 0) &&
                     <Box sx={{backgroundColor:'#fafafa'}}>
                     <Comment comment={userReview[0]} />
-                    <Button size="small" onClick={() => { dispatch(deleteReview({id:userReview[0]._id, memberId:actor._id}))}}>Delete</Button>
+                    <Button size="small" onClick={() => { dispatch(deleteReview({id:userReview[0]._id, memberId:actor.member._id}))}}>Delete</Button>
 
                     </Box>
 

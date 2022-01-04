@@ -6,10 +6,12 @@ import { CardMedia, Grid, Paper, Box, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchBar from '../common/SearchBar';
 import { clearActors } from '../../redux/actorSlice';
-import RatingFilter from '../common/RatingFilter';
-import YearFilter from '../common/YearFilter';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Snack from '../common/Snack';
+import EditIcon from '@mui/icons-material/Edit';
+import EditProducer from './EditProducer';
+import CreateProducer from './CreateProducer';
+
 
 const style = {
     height: 30,
@@ -71,6 +73,10 @@ const Producer = () => {
         <Box sx={{m:2}}>
           {/* <RatingFilter/> */}
         </Box>
+
+        {
+          user && user.role === 'Admin' && <CreateProducer/>
+        }
         <InfiniteScroll
           dataLength={members.length}
           next={fetchMoreData}
@@ -82,7 +88,7 @@ const Producer = () => {
         >
         <Grid container spacing={2} sx={{p:2}}>
             {members.map(member => (
-                <Grid item lg={4} md={4} key={member._id} sm={4} xs={12}>
+                <Grid item lg={2} md={2} key={member._id} sm={2} xs={12}>
                   <Paper elevation={4} sx={{p:2}}>
                     <Link to={`/producers/${member._id}`}>
                         <CardMedia
@@ -96,9 +102,14 @@ const Producer = () => {
                     </Link>
                     <Box>
                       {
-                        (user && user.role === 'Admin') && <Button variant='contained' color='error' onClick={ (e) => { handleDelete(e,member._id)} }><DeleteIcon></DeleteIcon></Button>
+                        (user && user.role === 'Admin') && 
+                        <div>
+                          <Button variant='contained'fullWidth color='error' onClick={ (e) => { handleDelete(e,member._id)} }><DeleteIcon></DeleteIcon></Button>
+                          <EditProducer id={member._id} member={member}><EditIcon></EditIcon></EditProducer>
+                          
+                        </div>
                       }
-                    </Box>
+                      </Box>
                   </Paper>
                 </Grid>
             ))}

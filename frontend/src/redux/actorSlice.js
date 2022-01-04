@@ -92,6 +92,44 @@ export const deleteActor = createAsyncThunk(
         }
     }
 )
+
+export const createActor = createAsyncThunk(
+    'actor/createActor',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.post(`/api/v1/members/new`,obj, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+
+            })
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
+export const editActor = createAsyncThunk(
+    'actor/editActor',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.put(`/api/v1/members/${obj.get('_id')}`,obj, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+
+            })
+            
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
     
 
 const initialState = {
@@ -213,6 +251,33 @@ const actorSlice = createSlice({
             state.errors = action.payload
             state.isLoading = false
         },
+        [createActor.pending] : (state) => {
+            state.isLoading = true
+        },
+        [createActor.fulfilled] : (state,action) => {
+            state.message = action.payload.message
+            state.members = [action.payload.member,...state.members]
+            state.isLoading = false
+        },
+        [createActor.rejected] : (state, action) => {
+            state.errors = action.payload
+            state.isLoading = false
+    
+        },
+        [editActor.pending] : (state) => {
+            state.isLoading = true
+        },
+        [editActor.fulfilled] : (state,action) => {
+            state.message = action.payload.message
+            const memberIndex = state.members.findIndex(member => member._id === action.payload.member._id);
+            state.members[memberIndex] = {...action.payload.member}
+            state.isLoading = false
+        },
+        [editActor.rejected] : (state, action) => {
+            state.errors = action.payload
+            state.isLoading = false
+    
+        }
     }
 })
 export const { setHasMore, setPage, clearActors, clearActorsNames } = actorSlice.actions

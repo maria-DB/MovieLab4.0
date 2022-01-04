@@ -90,19 +90,18 @@ const HomePage = () => {
         <Box sx={{m:2}}>
           <SearchBar items={titles} label="Search Movie"/>
         </Box>
-
-        <div style={{ float: 'right'}}>
-        <Box sx={{m:2}}>
+          {
+            user && user.role === 'Admin' && <Create/>
+          }
+        <div sx={{m:2}} style={{ float: 'right'}}>
+          
           <RatingFilter/>
           <YearFilter/>
                        {/* <Paper sx={{padding:'5%',borderRadius:'10px', display:'flex', justifyContent:'center', alignItems:'center'}} elevation={6}>
                             <getPopularMovies/>
                         </Paper> */}
-        </Box></div>
+        </div>
 
-        {
-          user && user.role === 'Admin' && <Create/>
-        }
 
         
         <InfiniteScroll

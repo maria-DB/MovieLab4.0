@@ -125,7 +125,7 @@ export const editMovie = createAsyncThunk(
                 }
 
             })
-            
+            response.data.movieId = obj.get('_id')
             return response.data
         } catch (error) {
             return rejectWithValue(error.response.data)

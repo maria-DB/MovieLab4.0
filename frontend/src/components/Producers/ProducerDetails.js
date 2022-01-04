@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getProducerDetail } from "../../redux/producerSlice";
+
 
 const ProducerDetails = () => {
 
@@ -21,12 +22,19 @@ const ProducerDetails = () => {
     return ( 
         <>
         <div style={{padding: '10%'}}>
-            <p>{producer && producer.name}</p>
-            <p>{producer && producer.role}</p>
-            <p>{producer && producer.avatar.map(avatar => {
+            <p>{producer && producer.member.name}</p>
+            <p>{producer && producer.member.role}</p>
+            <p>{producer && producer.member.avatar.map(avatar => {
                 return <img src={avatar.url} alt={avatar.public_url} />
             })}</p>
-            <p>{producer && producer.info}</p>
+            <p>{producer && producer.member.info}</p>
+            { producer && producer.movies &&
+                producer.movies.map(movie => {
+                    return <>
+                    <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+                    </>
+                })
+            } 
             </div>
         </>
      );

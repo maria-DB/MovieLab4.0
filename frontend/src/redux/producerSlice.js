@@ -64,6 +64,43 @@ export const deleteProducer = createAsyncThunk(
         }
     }
 )
+export const createProducer = createAsyncThunk(
+    'producer/createProducer',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.post(`/api/v1/members/new`,obj, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+
+            })
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
+export const editProducer = createAsyncThunk(
+    'producer/editProducer',
+    async(obj, {rejectWithValue}) => {
+        try {
+            const response = await axios.put(`/api/v1/members/${obj.get('_id')}`,obj, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+
+            })
+            
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+            
+        }
+    }
+)
+
 
 const initialState = {
     members:[],
@@ -157,6 +194,33 @@ const producerSlice = createSlice({
         state.errors = action.payload
         state.isLoading = false
     },
+    [createProducer.pending] : (state) => {
+        state.isLoading = true
+    },
+    [createProducer.fulfilled] : (state,action) => {
+        state.message = action.payload.message
+        state.members = [action.payload.member,...state.members]
+        state.isLoading = false
+    },
+    [createProducer.rejected] : (state, action) => {
+        state.errors = action.payload
+        state.isLoading = false
+
+    },
+    [editProducer.pending] : (state) => {
+        state.isLoading = true
+    },
+    [editProducer.fulfilled] : (state,action) => {
+        state.message = action.payload.message
+        const memberIndex = state.members.findIndex(member => member._id === action.payload.member._id);
+        state.members[memberIndex] = {...action.payload.member}
+        state.isLoading = false
+    },
+    [editProducer.rejected] : (state, action) => {
+        state.errors = action.payload
+        state.isLoading = false
+
+    }
 
 }
 })

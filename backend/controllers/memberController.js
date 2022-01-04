@@ -34,6 +34,7 @@ exports.newMember = catchAsyncErrors(async (req,res,next) =>{
     }
 
     req.body.avatar = imageLinks
+    // req.body.members = JSON.parse(req.body.members)
 
     const member = await Member.create({
         name: req.body.name,
@@ -44,7 +45,7 @@ exports.newMember = catchAsyncErrors(async (req,res,next) =>{
 
     res.status(200).json({
         success:true,
-        message:`${member.role} has been created`
+        member
     })
 })
 
@@ -107,8 +108,8 @@ exports.updateMember = catchAsyncErrors(async (req,res,next) => {
 
     if(images !== undefined) {
         //Delete
-        for(let i = 0; i < member.images.length; i++) {
-            const result = await cloudinary.v2.uploader.destroy(member.images[i].public_id)
+        for(let i = 0; i < member.avatar.length; i++) {
+            const result = await cloudinary.v2.uploader.destroy(member.avatar[i].public_id)
 
         }
 

@@ -5,6 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearError, loginUser, setEmail, setRegister } from '../../redux/userSlice';
 import { useState } from 'react';
 import GoogleLoginHook from './GoogleLoginHook';
+import IconButton from '@mui/material/IconButton';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const LoginForm = () => {
 
@@ -13,6 +20,22 @@ const LoginForm = () => {
     const { isLoading, email, errors } = useSelector(state => state.user);
     const dispatch = useDispatch();
     const [error,setError] = useState(null);
+
+    const [values, setValues] = useState({
+        password: '',
+        showPassword: false,
+      });
+    
+      const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+      };
+    
+      const handleClickShowPassword = () => {
+        setValues({
+          ...values,
+          showPassword: !values.showPassword,
+        });
+      };
 
     const handleSignIn = (e) => {
         e.preventDefault();
@@ -48,7 +71,28 @@ const LoginForm = () => {
             }
         <Grid item>
             <TextField id="email" label="Email" variant="standard" fullWidth value={email} onChange={(e) => { setError(''); dispatch(clearError()); dispatch(setEmail(e.target.value));}} />
-            <TextField label="Password" variant="standard" fullWidth/>
+            <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                <OutlinedInput
+                id="outlined-adornment-password"
+                type={values.showPassword ? 'text' : 'password'}
+                value={values.password}
+                onChange={handleChange('password')}
+                endAdornment={
+                    <InputAdornment position="end">
+                    <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                    >
+                        {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                        </InputAdornment>
+                        }
+                        label="Password"
+                        />
+                        </FormControl>
+
             <Button variant="outlined" color="primary" fullWidth sx={{mt:2,mb:2}} onClick={handleSignIn}>Sign in</Button>
             
         </Grid>
