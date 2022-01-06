@@ -29,6 +29,8 @@ const Create = () => {
 
     ];
 
+    let producerNames = []
+
     const [imagePreview,setImagePreview] = useState([]);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
@@ -100,6 +102,10 @@ const Create = () => {
             reader.readAsDataURL(file)
         })
     }
+
+    producerNamesWithId.forEach((prodName) => {
+        producerNames.push(prodName.name)
+    })
 
 
     const formHandler = (e) => {
@@ -294,7 +300,7 @@ const Create = () => {
                         multiple={true}
                         id="producers-list"
                         name="producers"
-                        options={producerNamesWithId}
+                        options={producerNames}
                         getOptionLabel={((option) => option.title)}
                         renderInput={(params) => (
                             <TextField 
